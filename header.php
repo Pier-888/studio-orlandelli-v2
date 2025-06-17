@@ -10,28 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <?php wp_head(); ?>
-    
-    <!-- Ensure Tailwind loads immediately -->
-    <script>
-        // Fallback Tailwind config in case the external file doesn't load
-        if (typeof tailwind !== 'undefined') {
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            primary: '#4f6d7a',
-                            secondary: '#e0e6f1',
-                            accent: '#9b8c7d',
-                            light: '#f8f9fa',
-                            dark: '#4a5568'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 </head>
-<body <?php body_class('bg-light text-dark'); ?>>
+<body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
 <!-- Header -->

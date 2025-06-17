@@ -26,46 +26,73 @@ function irene_orlandelli_setup() {
 }
 add_action('after_setup_theme', 'irene_orlandelli_setup');
 
+// Remove WordPress default styles that might conflict
+function remove_wp_block_library_css(){
+    wp_dequeue_style( 'wp-block-library' );
+    wp_dequeue_style( 'wp-block-library-theme' );
+    wp_dequeue_style( 'wc-blocks-style' );
+    wp_dequeue_style( 'classic-theme-styles' );
+    wp_dequeue_style( 'global-styles' );
+}
+add_action( 'wp_enqueue_scripts', 'remove_wp_block_library_css', 100 );
+
 // Enqueue styles and scripts
 function irene_orlandelli_scripts() {
-    // Enqueue Google Fonts FIRST
+    // Remove default WordPress styles
+    wp_dequeue_style('wp-block-library');
+    wp_dequeue_style('wp-block-library-theme');
+    
+    // Enqueue Google Fonts FIRST with high priority
     wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap', array(), null);
     
     // Enqueue Font Awesome
     wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0');
     
-    // Enqueue Tailwind CSS BEFORE main stylesheet
-    wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com', array(), '3.0.0', false);
-    
-    // Enqueue Tailwind config AFTER Tailwind but BEFORE main styles
-    wp_enqueue_script('tailwind-config', get_template_directory_uri() . '/assets/js/tailwind-config.js', array('tailwind-cdn'), '1.0.0', false);
-    
-    // Enqueue main stylesheet LAST
-    wp_enqueue_style('irene-orlandelli-style', get_stylesheet_uri(), array('google-fonts', 'font-awesome'), '2.0.0');
+    // Enqueue main stylesheet LAST with all dependencies
+    wp_enqueue_style('irene-orlandelli-style', get_stylesheet_uri(), array('google-fonts', 'font-awesome'), '2.2.0');
     
     // Enqueue main JavaScript
     wp_enqueue_script('irene-orlandelli-script', get_template_directory_uri() . '/assets/js/main.js', array(), '1.0.0', true);
 }
 add_action('wp_enqueue_scripts', 'irene_orlandelli_scripts');
 
-// Add inline styles to ensure Tailwind works
-function irene_orlandelli_inline_styles() {
+// Add critical inline styles to ensure immediate styling
+function irene_orlandelli_critical_styles() {
     ?>
     <style>
-        /* Ensure Tailwind classes work immediately */
+        /* Critical styles for immediate rendering */
+        body { 
+            font-family: 'Poppins', sans-serif !important; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 { 
+            font-family: 'Playfair Display', serif !important; 
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        * { box-sizing: border-box; }
+        
         .bg-primary { background-color: #4f6d7a !important; }
         .bg-secondary { background-color: #e0e6f1 !important; }
         .bg-accent { background-color: #9b8c7d !important; }
+        .bg-white { background-color: white !important; }
         .text-primary { color: #4f6d7a !important; }
         .text-accent { color: #9b8c7d !important; }
         .text-white { color: white !important; }
         
-        /* Ensure fonts load */
-        body { font-family: 'Poppins', sans-serif !important; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif !important; }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 1.5rem; 
+            width: 100%; 
+        }
         
-        /* Critical layout styles */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
         .grid { display: grid; }
         .flex { display: flex; }
         .hidden { display: none !important; }
@@ -75,49 +102,86 @@ function irene_orlandelli_inline_styles() {
         .absolute { position: absolute; }
         .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
         .z-50 { z-index: 50; }
-        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        .rounded-xl { border-radius: 0.75rem; }
+        
         .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
         .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        
         .mb-4 { margin-bottom: 1rem; }
         .mb-6 { margin-bottom: 1.5rem; }
         .mb-8 { margin-bottom: 2rem; }
+        .mb-16 { margin-bottom: 4rem; }
+        
         .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
         .font-bold { font-weight: 700; }
         .text-center { text-align: center; }
+        
         .items-center { align-items: center; }
         .justify-center { justify-content: center; }
-        .space-y-4 > * + * { margin-top: 1rem; }
-        .gap-8 { gap: 2rem; }
+        .justify-between { justify-content: space-between; }
         
-        /* Hero section */
+        .gap-8 { gap: 2rem; }
+        .space-x-3 > * + * { margin-left: 0.75rem; }
+        .space-x-8 > * + * { margin-left: 2rem; }
+        
+        .rounded-xl { border-radius: 0.75rem; }
+        .shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        
         .hero-gradient {
             background: linear-gradient(rgba(79, 109, 122, 0.8), rgba(224, 230, 241, 0.7)) !important;
         }
         
-        /* Service cards */
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        .service-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
             transition: all 0.3s ease;
         }
         
-        /* Responsive grid */
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
         @media (min-width: 768px) {
             .md\\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .md\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-            .md\\:flex-row { flex-direction: row; }
+            .md\\:flex { display: flex; }
+            .md\\:hidden { display: none; }
             .md\\:text-left { text-align: left; }
+            .md\\:text-2xl { font-size: 1.5rem; line-height: 2rem; }
         }
         
         @media (min-width: 1024px) {
             .lg\\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
             .lg\\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
         }
+        
+        header.sticky {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        #hero {
+            position: relative;
+            height: 100vh;
+            padding-top: 4rem;
+        }
+        
+        @media (min-width: 768px) {
+            #hero { padding-top: 0; }
+        }
     </style>
     <?php
 }
-add_action('wp_head', 'irene_orlandelli_inline_styles', 1);
+add_action('wp_head', 'irene_orlandelli_critical_styles', 1);
 
 // Register widget areas
 function irene_orlandelli_widgets_init() {
@@ -361,34 +425,32 @@ function irene_orlandelli_excerpt_more($more) {
 }
 add_filter('excerpt_more', 'irene_orlandelli_excerpt_more');
 
-// Remove WordPress default styles that might conflict
-function remove_wp_block_library_css(){
-    wp_dequeue_style( 'wp-block-library' );
-    wp_dequeue_style( 'wp-block-library-theme' );
-    wp_dequeue_style( 'wc-blocks-style' ); // Remove WooCommerce block CSS
+// Clean up WordPress head
+function irene_orlandelli_cleanup_head() {
+    remove_action('wp_head', 'wp_generator');
+    remove_action('wp_head', 'wlwmanifest_link');
+    remove_action('wp_head', 'rsd_link');
+    remove_action('wp_head', 'wp_shortlink_wp_head');
+    remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10);
 }
-add_action( 'wp_enqueue_scripts', 'remove_wp_block_library_css', 100 );
+add_action('init', 'irene_orlandelli_cleanup_head');
 
-// Ensure Tailwind config loads properly
-function irene_orlandelli_tailwind_config() {
-    ?>
-    <script>
-        if (typeof tailwind !== 'undefined') {
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            primary: '#4f6d7a',
-                            secondary: '#e0e6f1',
-                            accent: '#9b8c7d',
-                            light: '#f8f9fa',
-                            dark: '#4a5568'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <?php
+// Disable WordPress emoji scripts
+function disable_emojis() {
+    remove_action('wp_head', 'print_emoji_detection_script', 7);
+    remove_action('admin_print_scripts', 'print_emoji_detection_script');
+    remove_action('wp_print_styles', 'print_emoji_styles');
+    remove_action('admin_print_styles', 'print_emoji_styles');
+    remove_filter('the_content_feed', 'wp_staticize_emoji');
+    remove_filter('comment_text_rss', 'wp_staticize_emoji');
+    remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 }
-add_action('wp_head', 'irene_orlandelli_tailwind_config', 5);
+add_action('init', 'disable_emojis');
+
+// Ensure proper body classes
+function irene_orlandelli_body_classes($classes) {
+    $classes[] = 'bg-light';
+    $classes[] = 'text-dark';
+    return $classes;
+}
+add_filter('body_class', 'irene_orlandelli_body_classes');
