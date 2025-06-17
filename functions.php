@@ -48,8 +48,12 @@ function irene_orlandelli_scripts() {
     // Enqueue Font Awesome
     wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0');
     
+    // Enqueue Tailwind CSS
+    wp_enqueue_script('tailwind-config', get_template_directory_uri() . '/assets/js/tailwind-config.js', array(), '1.0.0', false);
+    wp_enqueue_script('tailwind-cdn', 'https://cdn.tailwindcss.com', array('tailwind-config'), '3.0.0', false);
+    
     // Enqueue main stylesheet LAST with all dependencies
-    wp_enqueue_style('irene-orlandelli-style', get_stylesheet_uri(), array('google-fonts', 'font-awesome'), '2.2.0');
+    wp_enqueue_style('irene-orlandelli-style', get_stylesheet_uri(), array('google-fonts', 'font-awesome'), '2.3.0');
     
     // Enqueue main JavaScript
     wp_enqueue_script('irene-orlandelli-script', get_template_directory_uri() . '/assets/js/main.js', array(), '1.0.0', true);

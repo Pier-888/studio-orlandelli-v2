@@ -84,7 +84,7 @@ function irene_orlandelli_fallback_menu() {
     echo '<a href="' . esc_url(home_url('/')) . '" class="font-medium hover:text-accent transition-colors">Home</a>';
     echo '<a href="' . esc_url(home_url('/#servizi')) . '" class="font-medium hover:text-accent transition-colors">Servizi</a>';
     echo '<a href="' . esc_url(home_url('/#chisono')) . '" class="font-medium hover:text-accent transition-colors">Chi Sono</a>';
-    echo '<a href="' . esc_url(home_url('/blog/')) . '" class="font-medium hover:text-accent transition-colors">Articoli</a>';
+    echo '<a href="' . esc_url(get_permalink(get_option('page_for_posts')) ?: home_url('/blog/')) . '" class="font-medium hover:text-accent transition-colors">Articoli</a>';
 }
 
 // Fallback menu for mobile
@@ -92,6 +92,6 @@ function irene_orlandelli_mobile_fallback_menu() {
     echo '<a href="' . esc_url(home_url('/')) . '" class="font-medium hover:text-accent transition-colors">Home</a>';
     echo '<a href="' . esc_url(home_url('/#servizi')) . '" class="font-medium hover:text-accent transition-colors">Servizi</a>';
     echo '<a href="' . esc_url(home_url('/#chisono')) . '" class="font-medium hover:text-accent transition-colors">Chi Sono</a>';
-    echo '<a href="' . esc_url(home_url('/blog/')) . '" class="font-medium hover:text-accent transition-colors">Articoli</a>';
+    echo '<a href="' . esc_url(get_permalink(get_option('page_for_posts')) ?: home_url('/blog/')) . '" class="font-medium hover:text-accent transition-colors">Articoli</a>';
 }
 ?>
