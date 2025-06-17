@@ -260,7 +260,7 @@ get_header(); ?>
         </div>
         
         <div class="text-center mt-12">
-            <a href="<?php echo esc_url(home_url('/blog/')); ?>" class="inline-block bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Visita il blog</a>
+            <a href="<?php echo esc_url(get_permalink(get_option('page_for_posts')) ?: home_url('/blog/')); ?>" class="inline-block bg-primary hover:bg-opacity-90 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Visita il blog</a>
         </div>
     </div>
 </section>

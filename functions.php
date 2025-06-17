@@ -482,3 +482,44 @@ function irene_orlandelli_body_classes($classes) {
     return $classes;
 }
 add_filter('body_class', 'irene_orlandelli_body_classes');
+
+// Fix blog URL function
+function get_blog_url() {
+    // Check if there's a page set for posts
+    $blog_page_id = get_option('page_for_posts');
+    if ($blog_page_id) {
+        return get_permalink($blog_page_id);
+    }
+    
+    // Check if there's a page with slug 'blog'
+    $blog_page = get_page_by_path('blog');
+    if ($blog_page) {
+        return get_permalink($blog_page);
+    }
+    
+    // Default to home URL with /blog/
+    return home_url('/blog/');
+}
+
+// Create blog page automatically if it doesn't exist
+function create_blog_page_if_not_exists() {
+    // Check if blog page exists
+    $blog_page = get_page_by_path('blog');
+    
+    if (!$blog_page) {
+        // Create blog page
+        $blog_page_id = wp_insert_post(array(
+            'post_title' => 'Blog',
+            'post_content' => 'Questa è la pagina del blog dove vengono mostrati tutti gli articoli.',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_name' => 'blog'
+        ));
+        
+        if ($blog_page_id && !is_wp_error($blog_page_id)) {
+            // Set this page as the posts page
+            update_option('page_for_posts', $blog_page_id);
+        }
+    }
+}
+add_action('after_switch_theme', 'create_blog_page_if_not_exists');

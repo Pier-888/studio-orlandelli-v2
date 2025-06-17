@@ -187,7 +187,14 @@ function irene_orlandelli_footer_fallback_menu() {
     echo '<ul class="space-y-2 opacity-80">';
     echo '<li><a href="' . esc_url(home_url('/#servizi')) . '" class="hover:underline">Servizi</a></li>';
     echo '<li><a href="' . esc_url(home_url('/#chisono')) . '" class="hover:underline">Chi sono</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/blog/')) . '" class="hover:underline">Articoli</a></li>';
+    
+    // Check if we have a blog page set or use default
+    $blog_url = get_permalink(get_option('page_for_posts'));
+    if (!$blog_url) {
+        $blog_url = home_url('/blog/');
+    }
+    echo '<li><a href="' . esc_url($blog_url) . '" class="hover:underline">Articoli</a></li>';
+    
     echo '<li><a href="' . esc_url(home_url('/privacy-policy/')) . '" class="hover:underline">Privacy Policy</a></li>';
     echo '</ul>';
 }
