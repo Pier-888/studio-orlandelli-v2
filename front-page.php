@@ -15,13 +15,37 @@ get_header(); ?>
     <div class="absolute inset-0 hero-gradient flex items-center">
         <div class="container mx-auto px-6 max-w-4xl">
             <div class="text-center md:text-left text-white">
-                <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
-                    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6"><?php the_title(); ?></h1>
-                    <div class="text-xl md:text-2xl mb-8"><?php the_content(); ?></div>
-                <?php endwhile; else : ?>
-                    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6">Il sostegno che ti guida a ritrovare l'equilibrio</h1>
-                    <p class="text-xl md:text-2xl mb-8">Affrontare le sfide della vita adulta può essere complesso: relazioni, obiettivi accademici e pressioni lavorative spesso mettono alla prova la nostra serenità.</p>
-                <?php endif; ?>
+                <?php 
+                // Get custom content or use default
+                $hero_title = get_theme_mod('hero_title', 'Il sostegno che ti guida a ritrovare l\'equilibrio');
+                $hero_content = get_theme_mod('hero_content', 'Affrontare le sfide della vita adulta può essere complesso: relazioni, obiettivi accademici e pressioni lavorative spesso mettono alla prova la nostra serenità.');
+                
+                // Check if we have post content
+                if (have_posts()) : 
+                    while (have_posts()) : the_post();
+                        $post_content = get_the_content();
+                        if (!empty($post_content) && trim($post_content) !== '') :
+                            // Use post content if available
+                            ?>
+                            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6"><?php echo esc_html($hero_title); ?></h1>
+                            <div class="text-xl md:text-2xl mb-8"><?php the_content(); ?></div>
+                            <?php
+                        else :
+                            // Use default content
+                            ?>
+                            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6"><?php echo esc_html($hero_title); ?></h1>
+                            <p class="text-xl md:text-2xl mb-8"><?php echo esc_html($hero_content); ?></p>
+                            <?php
+                        endif;
+                    endwhile;
+                else : 
+                    // Fallback content
+                    ?>
+                    <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6"><?php echo esc_html($hero_title); ?></h1>
+                    <p class="text-xl md:text-2xl mb-8"><?php echo esc_html($hero_content); ?></p>
+                    <?php
+                endif; 
+                ?>
                 
                 <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
                     <a href="#servizi" class="inline-block bg-accent hover:bg-opacity-90 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300">Scopri i miei servizi</a>
@@ -65,7 +89,7 @@ get_header(); ?>
                     </div>
                     <h3 class="text-xl font-bold mb-4 text-primary"><?php the_title(); ?></h3>
                     <div class="mb-4"><?php the_excerpt(); ?></div>
-                    <div class="text-gray-600"><?php the_content(); ?></div>
+                    <div class="text-gray-600"><?php echo wp_trim_words(get_the_content(), 20); ?></div>
                 </div>
             <?php 
                 endwhile;

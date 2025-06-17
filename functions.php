@@ -254,6 +254,34 @@ add_action('init', 'irene_orlandelli_custom_post_types');
 
 // Theme customizer
 function irene_orlandelli_customize_register($wp_customize) {
+    // Hero Section
+    $wp_customize->add_section('hero_section', array(
+        'title' => __('Sezione Hero', 'irene-orlandelli'),
+        'priority' => 25,
+    ));
+    
+    // Hero title
+    $wp_customize->add_setting('hero_title', array(
+        'default' => 'Il sostegno che ti guida a ritrovare l\'equilibrio',
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    $wp_customize->add_control('hero_title', array(
+        'label' => __('Titolo Hero', 'irene-orlandelli'),
+        'section' => 'hero_section',
+        'type' => 'text',
+    ));
+    
+    // Hero content
+    $wp_customize->add_setting('hero_content', array(
+        'default' => 'Affrontare le sfide della vita adulta può essere complesso: relazioni, obiettivi accademici e pressioni lavorative spesso mettono alla prova la nostra serenità.',
+        'sanitize_callback' => 'sanitize_textarea_field',
+    ));
+    $wp_customize->add_control('hero_content', array(
+        'label' => __('Contenuto Hero', 'irene-orlandelli'),
+        'section' => 'hero_section',
+        'type' => 'textarea',
+    ));
+    
     // Contact Information Section
     $wp_customize->add_section('contact_info', array(
         'title' => __('Informazioni di Contatto', 'irene-orlandelli'),
